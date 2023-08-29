@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.RadioButton
+import android.widget.TextView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wahyus.ytmp3example.databinding.ActivityMainBinding
+import com.wahyus.ytmp3example.databinding.BottomSheetDialogBinding
 import com.wahyus.ytmp3example.network.response.DataMp3
 import com.wahyus.ytmp3example.network.retrofit.ApiConfig
 import retrofit2.Call
@@ -16,12 +19,24 @@ import retrofit2.Response
 class MainActivity : AppCompatActivity() {
 
     private lateinit var mainActivityBinding: ActivityMainBinding
+    private lateinit var dialog: BottomSheetDialog
+    private lateinit var view: View
+    private lateinit var title: TextView
+    private lateinit var size: TextView
     private var qualityMusic = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainActivityBinding.root)
+
+        dialog = BottomSheetDialog(this)
+        view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+
+        title = view.findViewById(R.id.title)
+        size = view.findViewById(R.id.size)
+
+        dialog.setContentView(view)
 
         mainActivityBinding.btnSearch.setOnClickListener {
             //call api
@@ -65,7 +80,9 @@ class MainActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        Log.d("MainActivity", "OnSuccess: ${responseBody}")
+                        title.text = responseBody.title
+                        size.text = responseBody.size
+                        dialog.show()
                     }
                 } else {
                     Log.e("MainActivity", "OnFailure: ${response.message()}")
