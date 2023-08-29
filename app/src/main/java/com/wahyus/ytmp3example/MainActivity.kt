@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.RadioButton
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wahyus.ytmp3example.databinding.ActivityMainBinding
 import com.wahyus.ytmp3example.databinding.BottomSheetDialogBinding
+import com.wahyus.ytmp3example.network.downloadmanager.AndroidDownloader
 import com.wahyus.ytmp3example.network.response.DataMp3
 import com.wahyus.ytmp3example.network.retrofit.ApiConfig
 import retrofit2.Call
@@ -24,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var title: TextView
     private lateinit var size: TextView
     private var qualityMusic = 0
+    private var link = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -32,9 +35,11 @@ class MainActivity : AppCompatActivity() {
 
         dialog = BottomSheetDialog(this)
         view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+        val downloader = AndroidDownloader(this)
 
         title = view.findViewById(R.id.title)
         size = view.findViewById(R.id.size)
+        val buttonDownloadFile = view.findViewById<Button>(R.id.btn_download_now)
 
         dialog.setContentView(view)
 
@@ -44,6 +49,12 @@ class MainActivity : AppCompatActivity() {
             if (url.isNotEmpty()) {
                 getDownloadFile(this, url, qualityMusic)
             }
+        }
+
+        buttonDownloadFile.setOnClickListener {
+            val filename = title.text.toString()
+            downloader.downloadFile(link, filename)
+            dialog.dismiss()
         }
     }
 
@@ -82,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                     if (responseBody != null) {
                         title.text = responseBody.title
                         size.text = responseBody.size
+                        link = responseBody.link
                         dialog.show()
                     }
                 } else {
