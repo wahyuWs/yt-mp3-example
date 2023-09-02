@@ -1,6 +1,5 @@
 package com.wahyus.ytmp3example
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +9,6 @@ import android.widget.RadioButton
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.wahyus.ytmp3example.databinding.ActivityMainBinding
-import com.wahyus.ytmp3example.databinding.BottomSheetDialogBinding
 import com.wahyus.ytmp3example.network.downloadmanager.AndroidDownloader
 import com.wahyus.ytmp3example.network.response.DataMp3
 import com.wahyus.ytmp3example.network.retrofit.ApiConfig
@@ -47,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             //call api
             val url = mainActivityBinding.edtUrl.text.toString().trim()
             if (url.isNotEmpty()) {
-                getDownloadFile(this, url, qualityMusic)
+                getDownloadFile(url, qualityMusic)
             }
         }
 
@@ -84,8 +82,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getDownloadFile(context: Context, url: String, quality: Int) {
-        val client = ApiConfig.getApiService(context).getData(url, quality)
+    private fun getDownloadFile(url: String, quality: Int) {
+        val client = ApiConfig.getApiService().getData(url, quality)
         client.enqueue(object : Callback<DataMp3> {
             override fun onResponse(call: Call<DataMp3>, response: Response<DataMp3>) {
                 if (response.isSuccessful) {
