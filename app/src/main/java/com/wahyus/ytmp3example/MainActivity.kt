@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         size = view.findViewById(R.id.size)
         val buttonDownloadFile = view.findViewById<Button>(R.id.btn_download_now)
 
-        dialog.setContentView(view)d
+        dialog.setContentView(view)
 
         mainActivityBinding.btnSearch.setOnClickListener {
             //call api
